@@ -1395,9 +1395,6 @@
              alternative_color2="FF8B7C73"
              text="{=str_tor_clan_beastmen_clan_1_desc}Beastmen are a race of savage mutant humanoids that exhibit various bestial-looking traits, such as cloven hooves, muscular human bodies, horned bestial heads, and primitive, evil intelligence. The Beastmen are a violent, war-driven race of savage mutants, seeking only to plague and destroy the civilizations of Men and the rest of the mortal world. They prey on the weak and defenseless, attacking lonely settlements without warning on a rampage of destruction before disappearing into the protective darkness of their dark nature, fleeing terrible retribution that often does not come." >
 	    <minor_faction_character_templates>
-            <template id="NPCCharacter.tor_beastman_lord_0" />
-            <template id="NPCCharacter.tor_beastman_lord_1" />
-            <template id="NPCCharacter.tor_beastman_lord_2" />
         </minor_faction_character_templates>
 	</Faction>
     <!-- Troll faction -->
