@@ -1415,7 +1415,6 @@
              alternative_color2="FF3D5636"
              text="{=str_tor_clan_troll_clan_1_desc}Trolls are massive, dim-witted creatures. Known for their regenerative abilities and fierce aggresion, all but the stupid or suicidal treat these creatures with caution." >
         <minor_faction_character_templates>
-            <template id="NPCCharacter.tor_troll_lord_0" />
         </minor_faction_character_templates>
     </Faction>
     <!-- Druchii faction -->
@@ -1436,9 +1435,6 @@
              alternative_color2="FF146981"
              text="{=str_tor_clan_druchii_clan_1_desc}The Druchii rely on slavery as the primary economic institution that keeps their dark kingdom of Naggaroth functioning and capable of maintaining itself in a permanent state of war. While the inhabitants of ancient Nagarythe were peerless warriors, they had little knowledge of how to build a self-sufficient civilization. For this reason, Malekith's kingdom depends on attacking other peoples for food or capturing slaves to work for them." >
          <minor_faction_character_templates>
-            <template id="NPCCharacter.tor_druchii_lord_0" />
-            <template id="NPCCharacter.tor_druchii_lord_1" />
-            <template id="NPCCharacter.tor_druchii_lord_2" />
         </minor_faction_character_templates>
     </Faction>
     <!-- Empire outlaw factions -->
