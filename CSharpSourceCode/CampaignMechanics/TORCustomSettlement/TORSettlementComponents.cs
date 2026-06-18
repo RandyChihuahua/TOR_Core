@@ -124,9 +124,12 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
     public class TrollCaveComponent : BaseRaiderSpawnerComponent
     {
         private string _battleSceneName;
+        private static int MIN_RAIDING_PARTY_SIZE = 7;
+        private static int MAX_RAIDING_PARTY_SIZE = 15;
 
-        public override int BattlePartySize => 200;
+        public override int BattlePartySize => 20;
         public override string BattleSceneName => string.IsNullOrEmpty(_battleSceneName) ? "TOR_troll_hideout_01" : _battleSceneName;
+
 
         public override List<string> RewardItemIds =>
         [
@@ -149,12 +152,12 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
             }
         }
 
-        public override void SpawnNewParty(out MobileParty party, Settlement initialTarget)
+        public override MobileParty SpawnNewParty(Settlement initialTarget)
         {
             PartyTemplateObject template = MBObjectManager.Instance.GetObject<PartyTemplateObject>("troll_party_template");
             Clan trollClan = Clan.FindFirst(x => x.StringId == "troll_clan_1");
             var find = TORCommon.FindSettlementsAroundPosition(Settlement.Position.ToVec2(), 60, x => !x.IsRaided && !x.IsUnderRaid && x.IsVillage).GetRandomElementInefficiently();
-            var trollRaidingParty = RaidingPartyComponent.CreateRaidingParty("troll_clan_1_party_" + RaidingPartyCount + 1, Settlement, "Troll Raiders", template, MBRandom.RandomInt(7, 15));
+            var trollRaidingParty = RaidingPartyComponent.CreateRaidingParty("troll_clan_1_party_" + RaidingPartyCount + 1, Settlement, "Troll Raiders", template, MBRandom.RandomInt(MIN_RAIDING_PARTY_SIZE, MAX_RAIDING_PARTY_SIZE));
             if (find != null)
             {
                 SetPartyAiAction.GetActionForRaidingSettlement(trollRaidingParty, initialTarget ?? find, MobileParty.NavigationType.Default, false);
@@ -165,7 +168,7 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
                 ((RaidingPartyComponent)trollRaidingParty.PartyComponent).Target = null;
             }
 
-            party = trollRaidingParty;
+            return trollRaidingParty;
         }
     }
 
@@ -173,6 +176,9 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
     //OnPartLefty to announce an invasion beginning, then the player can react to it as they wish.
     public class ChaosPortalComponent : BaseRaiderSpawnerComponent
     {
+        private static int MIN_RAIDING_PARTY_SIZE = 75;
+        private static int MAX_RAIDING_PARTY_SIZE = 99;
+        private static int RAIDING_PARTY_RADIUS = 60;
         public override int BattlePartySize => 550;
         public override string BattleSceneName => "TOR_chaos_portal_001_atmo_w_night";
 
@@ -229,12 +235,12 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
 
         public override IFaction MapFaction => Settlement.Owner.Clan;
 
-        public override void SpawnNewParty(out MobileParty party, Settlement initialTarget)
+        public override MobileParty SpawnNewParty(Settlement initialTarget)
         {
             PartyTemplateObject template = MBObjectManager.Instance.GetObject<PartyTemplateObject>("chaos_lordparty_template");
             Clan chaosClan = Clan.FindFirst(x => x.StringId == "chaos_clan_1");
-            var find = TORCommon.FindSettlementsAroundPosition(Settlement.Position.ToVec2(), 60, x => !x.IsRaided && !x.IsUnderRaid && x.IsVillage).GetRandomElementInefficiently();
-            var targetPartySize = MBRandom.RandomInt(75, 99);
+            var find = TORCommon.FindSettlementsAroundPosition(Settlement.Position.ToVec2(), RAIDING_PARTY_RADIUS, x => !x.IsRaided && !x.IsUnderRaid && x.IsVillage).GetRandomElementInefficiently();
+            var targetPartySize = MBRandom.RandomInt(MIN_RAIDING_PARTY_SIZE, MAX_RAIDING_PARTY_SIZE);
             if (MBRandom.RandomInt(4) == 0)
             {
                 targetPartySize *= 2;//20% chance for doubled party size
@@ -251,7 +257,7 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
                 ((RaidingPartyComponent)chaosRaidingParty.PartyComponent).Target = null;
             }
 
-            party = chaosRaidingParty;
+            return chaosRaidingParty;
         }
     }
 
@@ -292,7 +298,7 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
 
         public override IFaction MapFaction => OwnerClan?.MapFaction;
 
-        public override void SpawnNewParty(out MobileParty party, Settlement initialTarget)
+        public override MobileParty SpawnNewParty(Settlement initialTarget)
         {
             PartyTemplateObject template = MBObjectManager.Instance.GetObject<PartyTemplateObject>("ungor_party");
             var find = TORCommon.FindSettlementsAroundPosition(Settlement.Position.ToVec2(), 60, x => !x.IsRaided && !x.IsUnderRaid && x.IsVillage).GetRandomElementInefficiently();
@@ -307,7 +313,7 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
                 ((RaidingPartyComponent)raidingParty.PartyComponent).Target = null;
             }
 
-            party = raidingParty;
+            return raidingParty;
         }
     }
 
@@ -344,7 +350,7 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
 
         public override IFaction MapFaction => Settlement.Owner.Clan;
 
-        public override void SpawnNewParty(out MobileParty party, Settlement initialTarget)
+        public override MobileParty SpawnNewParty(Settlement initialTarget)
         {
             PartyTemplateObject template = MBObjectManager.Instance.GetObject<PartyTemplateObject>("druchii_slaver_party");
             Clan clan = Clan.FindFirst(x => x.StringId == "druchii_clan_1");
@@ -360,7 +366,7 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
                 ((RaidingPartyComponent)raidingParty.PartyComponent).Target = null;
             }
 
-            party = raidingParty;
+            return raidingParty;
         }
     }
 }

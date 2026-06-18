@@ -1351,11 +1351,6 @@
              is_noble="true"
 			 text="{=str_tor_clan_black_pit_clan_1_desc}When the men of the Empire set out their borders deep within the surrounding forests, they were unwittingly beginning the bitter Drakwald War, which rages on to this day. The scattered tribes of Wood Goblins that dwelled in the dark regions of the forest stopped fighting each other to face the common enemy. The men of the Empire had unwittingly come too close to the Wood Goblins' most sacred territories, the land known as the Black Pit or the Valley of Many Eyes. From among these clans, the figure of Snagla Grobspit emerged, who thanks to his Redvenom clan, destroyed the Imperial armies and razed the village of Glomstadt. Afterwards, the Empire believed it had finished off the Redvenom tribe, but Snagla survived and there were others who escaped deeper into the forest. Snagla swept through the forests, rallying the fleeing goblins and more to his banner, and drove the humans from the depths of Drakwald. Since then, it has become customary for the Redvenom tribe to collect the feathers from the helmets of fallen Imperials and bathe them in the blood of their former owners as trophies. "
              banner_key="11.149.90.1449.1410.764.764.0.0.-90.505.149.142.787.787.764.764.0.1.0:kingdom_spiderkult" />
-
-
-
-
-
 	<!-- Chaos faction -->
     <Faction id="chaos_clan_1"
              name="{=str_tor_clan_chaos_clan_1_name}Chaos"
