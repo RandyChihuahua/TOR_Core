@@ -128,8 +128,7 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
         private static int MAX_RAIDING_PARTY_SIZE = 15;
 
         public override int BattlePartySize => 20;
-        public override string BattleSceneName => string.IsNullOrEmpty(_battleSceneName) ? "TOR_troll_hideout_01" : _battleSceneName;
-
+        public override string BattleSceneName => _battleSceneName;
 
         public override List<string> RewardItemIds =>
         [
@@ -146,10 +145,7 @@ namespace TOR_Core.CampaignMechanics.TORCustomSettlement
         public override void Deserialize(MBObjectManager objectManager, XmlNode node)
         {
             base.Deserialize(objectManager, node);
-            if (node.Attributes["battle_scene"] != null)
-            {
-                _battleSceneName = node.Attributes["battle_scene"].Value;
-            }
+            _battleSceneName = node.Attributes["battle_scene"]?.Value ?? "TOR_troll_hideout_01";
         }
 
         public override MobileParty SpawnNewParty(Settlement initialTarget)
