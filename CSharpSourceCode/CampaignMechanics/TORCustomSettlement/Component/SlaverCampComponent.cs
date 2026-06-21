@@ -44,6 +44,14 @@ public class SlaverCampComponent : BaseRaiderSpawnerComponent
 
     public override IFaction MapFaction => Settlement.Owner.Clan;
 
+    public override string RaiderTemplate => throw new System.NotImplementedException();
+
+    public override string RaiderPartyName => throw new System.NotImplementedException();
+
+    public override int RaiderPartyMinSize => throw new System.NotImplementedException();
+
+    public override int RaiderPartyMaxSize => throw new System.NotImplementedException();
+
     public override MobileParty SpawnNewParty(Settlement initialTarget)
     {
         PartyTemplateObject template = MBObjectManager.Instance.GetObject<PartyTemplateObject>("druchii_slaver_party");
