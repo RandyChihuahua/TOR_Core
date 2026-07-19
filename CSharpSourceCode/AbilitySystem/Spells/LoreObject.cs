@@ -7,19 +7,19 @@ namespace TOR_Core.AbilitySystem.Spells
     public class LoreObject
     {
         private static Dictionary<string, LoreObject> _lores = new Dictionary<string, LoreObject>();
-        public string ID { get; private set; }
+        public string StringId { get; private set; }
         public string Name { get; private set; }
         public string SpriteName { get; private set; }
         public bool IsRestrictedToVampires { get; private set; }
         public List<string> DisabledForCultures { get; private set; } = new List<string>();
 
-        private LoreObject(string id, string name, string spritename, List<string> cultureIds, bool restricted = false)
+        private LoreObject(string id, string name, string spritename, List<string> disabledCultureIds, bool restrictedToVampires = false)
         {
-            ID = id;
+            StringId = id;
             Name = name;
             SpriteName = spritename;
-            IsRestrictedToVampires = restricted;
-            foreach (string cultureId in cultureIds)
+            IsRestrictedToVampires = restrictedToVampires;//Sly : why is this useful? Is this always used appropriately?
+            foreach (string cultureId in disabledCultureIds)
             {
                 if (cultureId != "none" || cultureId != string.Empty)
                 {
@@ -57,7 +57,7 @@ namespace TOR_Core.AbilitySystem.Spells
         public static LoreObject GetLore(string id)
         {
             var lores = GetAll();
-            return lores.FirstOrDefault(lo => lo.ID == id);
+            return lores.FirstOrDefault(lo => lo.StringId == id);
         }
     }
 }

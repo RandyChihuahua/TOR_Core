@@ -237,14 +237,14 @@ public class TORCustomSettlementCampaignBehavior : CampaignBehaviorBase
                     .Where(i => i.IsTorItem()) // no vanilla
                     .Where(i => i.Culture == heroCulture)
                     .Where(i => (i.IsWeapon() || i.IsArmor() || i.ItemType == ItemObject.ItemTypeEnum.Shield))
-                    .Where(i => !i.IsCraftedByPlayer)
+                    .Where(i => !(i.IsCraftedByPlayer || i.HasAnyLootTraits()))
                     .Where(i => !artifactIds.Contains(i.StringId))
                     .GroupBy(i => i.StringId)
                     .Select(g => g.First())
                     .ToList();
 
                 var highTierCultureItems = cultureItems
-                    .Where(i => i.Tier >= ItemObject.ItemTiers.Tier3)
+                    .Where(i => i.Tier >= ItemObject.ItemTiers.Tier4)
                     .ToList();
 
                 var cultureWeaponOrArmorItems = cultureItems
@@ -308,12 +308,11 @@ public class TORCustomSettlementCampaignBehavior : CampaignBehaviorBase
 
                     if (cultureCandidates.Count > 0)
                     {
-                        var tier3 = cultureCandidates.Where(i => i.Tier == ItemObject.ItemTiers.Tier3).ToList();
                         var tier4 = cultureCandidates.Where(i => i.Tier == ItemObject.ItemTiers.Tier4).ToList();
                         var tier5 = cultureCandidates.Where(i => i.Tier == ItemObject.ItemTiers.Tier5).ToList();
                         var tier6 = cultureCandidates.Where(i => i.Tier == ItemObject.ItemTiers.Tier6).ToList();
 
-                        var weightedTiers = new List<(float Weight, List<ItemObject> Items)>{(40f, tier3),(30f, tier4),(20f, tier5),(10f, tier6),}
+                        var weightedTiers = new List<(float Weight, List<ItemObject> Items)>{(30f, tier4),(20f, tier5),(10f, tier6),}
                         .Where(t => t.Items.Count > 0)
                         .ToList();
 
@@ -374,6 +373,9 @@ public class TORCustomSettlementCampaignBehavior : CampaignBehaviorBase
 
                 foreach (var item in items)
                 {
+                    unmodifiedItems.Add(item);
+                        continue;
+
                     var isEquipmentItem =
                         item.IsWeapon() ||
                         item.IsArmor() ||
@@ -570,7 +572,7 @@ public class TORCustomSettlementCampaignBehavior : CampaignBehaviorBase
             case CursedSiteComponent:
                 CursedSiteAIRecruitment(party, settlement);
                 break;
-            case null:
+            default:
                 return;
         };
 
@@ -665,16 +667,11 @@ public class TORCustomSettlementCampaignBehavior : CampaignBehaviorBase
             var leaderReligion = party.LeaderHero.GetDominantReligion();
             if (leaderReligion != null)
             {
-                var shrineSettlement = TORCommon.FindSettlementsAroundPosition(
-                    party.Position.ToVec2(),
-                    30,
-                    x => x.SettlementComponent is ShrineComponent shrineComponent && shrineComponent.Religion == leaderReligion)
-                    .OrderBy(x => x.Position.DistanceSquared(party.Position))
-                    .FirstOrDefault();
+                var shrineSettlement = TORCommon.FindNearestSettlement(party, 20f, x => x.SettlementComponent is ShrineComponent shrineComponent && shrineComponent.Religion == leaderReligion);
                 if (shrineSettlement != null)
                 {
-                    party.SetMoveGoToSettlement(shrineSettlement, MobileParty.NavigationType.Default, false);
-                    party.Ai.SetDoNotMakeNewDecisions(true);
+                    SetPartyAiAction.GetActionForVisitingSettlement(party, shrineSettlement, MobileParty.NavigationType.Default, false, false);
+                    //party.Ai.SetDoNotMakeNewDecisions(true);
                 }
             }
         }
@@ -683,11 +680,11 @@ public class TORCustomSettlementCampaignBehavior : CampaignBehaviorBase
         {
             if (!_lastGhostRecruitmentTime.ContainsKey(party.LeaderHero.StringId) || _lastGhostRecruitmentTime[party.LeaderHero.StringId] + CursedSiteMenuLogic.MinimumDaysBetweenRaisingGhosts < (int)CampaignTime.Now.ToDays)
             {
-                var settlements = TORCommon.FindSettlementsAroundPosition(party.Position.ToVec2(), 20, x => x.SettlementComponent is CursedSiteComponent);
-                if (settlements.Count > 0)
+                var cursedSite = TORCommon.FindNearestSettlement(party, 20f, x => x.SettlementComponent is CursedSiteComponent);
+                if (cursedSite != null)
                 {
-                    party.SetMoveGoToSettlement(settlements.First(), MobileParty.NavigationType.Default, false);
-                    party.Ai.SetDoNotMakeNewDecisions(true);
+                    SetPartyAiAction.GetActionForVisitingSettlement(party, cursedSite, MobileParty.NavigationType.Default, false, false);
+                    //party.Ai.SetDoNotMakeNewDecisions(true);
                 }
             }
         }
@@ -738,8 +735,7 @@ public class TORCustomSettlementCampaignBehavior : CampaignBehaviorBase
             var site = settlement.SettlementComponent as CursedSiteComponent;
             if (site.IsActive)
             {
-
-                var affectedParties = TORCommon.FindPartiesAroundPosition(settlement.Position.ToVec2(), TORConstants.DEFAULT_CURSE_RADIUS, x => (x.IsLordParty && x.LeaderHero != null && x.LeaderHero.GetDominantReligion() != site.Religion) && (x.IsLordParty && x.LeaderHero != null && x.LeaderHero.Culture.StringId != "mousillon"));
+                var affectedParties = TORCommon.FindPartiesAroundPosition(settlement.Position.ToVec2(), TORConstants.DEFAULT_CURSE_RADIUS, x => (x.IsLordParty && x.LeaderHero != null && x.LeaderHero.GetDominantReligion() != site.Religion && x.LeaderHero.Culture.StringId != TORConstants.Cultures.MOUSILLON));
 
                 if (affectedParties.Contains(MobileParty.MainParty))
                 {
